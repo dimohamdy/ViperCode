@@ -141,13 +141,8 @@
 
 - (IBAction)createModule:(id)sender {
     // Check if user selected Include unite tests option and did not enered test file path.
-    if (self.includeTestsCheckBoxButton.state == 1 && [self.testsPathTextField.stringValue isEqual: @""]) {
-        NSArray *arr = @[@"Ok"];
-        [self displayPopupAlert:@"Test File Path cannot be empty. Please select Tests File Path." withButtons:arr alertTag:kTESTSALERT];
-    }
-    else {
+
         [self fireGenerateAction:NO replaceExistedModuleTest:NO];
-    }
 }
 
 #pragma mark - Module Generation Helper methods
