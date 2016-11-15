@@ -1,10 +1,10 @@
-//
-//  ViewController.m
-//  ViperCode
-//
-//  Created by Sameh Mabrouk on 2/1/16.
-//  Copyright © 2016 smapps. All rights reserved.
-//
+    //
+    //  ViewController.m
+    //  ViperCode
+    //
+    //  Created by Sameh Mabrouk on 2/1/16.
+    //  Copyright © 2016 smapps. All rights reserved.
+    //
 
 #import "ViewController.h"
 #import "ModuleGenerator.h"
@@ -15,7 +15,7 @@
 #import "NSString+Substring.h"
 #import <AddressBook/AddressBook.h>
 
-// Constants for defining alerts types.
+    // Constants for defining alerts types.
 #define kCOPYALERT 0
 #define kTESTSALERT 1
 #define kREMOVEALERT 2
@@ -29,7 +29,7 @@
 #pragma mark - View Controller methods
 - (void)viewDidLoad {
     [super viewDidLoad];
-
+    
     self.view.window.title = @"ViperCode";
     [self.generatedModuleButton setEnabled:NO];
     self.ProjectNameTextField.delegate = self;
@@ -64,7 +64,7 @@
     previewText = [previewText stringByAppendingString:[NSString stringWithFormat:@"//  Created by %@ on %@.\n", [self generateUserName], [self generateCurrentDate]]];
     previewText = [previewText stringByAppendingString:[NSString stringWithFormat:@"//  Copyright (c) %@ %@. All rights reserved.\n", [self generateCurrentYear], [self generateCompanyName]]];
     previewText = [previewText stringByAppendingString:@"//\n"];
-
+    
     self.previewHeaderCodeTextView.string = previewText;
 }
 
@@ -82,15 +82,15 @@
     }
     
     [alert beginSheetModalForWindow:self.view.window completionHandler:^(NSModalResponse returnCode) {
-        // Check returnCode here
+            // Check returnCode here
         if (returnCode == NSAlertFirstButtonReturn) {
             if (tag == kCOPYALERT) {
-                //Handling replace case
+                    //Handling replace case
                 [self fireGenerateAction:YES replaceExistedModuleTest:YES];
             }
         }
         else if (returnCode == NSAlertSecondButtonReturn) {
-            // Handling stop case
+                // Handling stop case
         }
     }];
 }
@@ -104,7 +104,7 @@
 #pragma mark - Module Generation methods
 - (void)fireGenerateAction:(BOOL)replaceExistedModule replaceExistedModuleTest:(BOOL)replaceExistedModuleTests {
     
-    // Generate Class
+        // Generate Class
     self.moduleGenerator = [[ModuleGenerator alloc] init];
     
     [self.moduleGenerator generateViperModuleWithName:[self generateModuleName]
@@ -122,17 +122,17 @@
                                                  
                                                  if (error) {
                                                      if (error.code == 516) {
-                                                         // Handle Copying Error: because an item with the same name already exists.
+                                                             // Handle Copying Error: because an item with the same name already exists.
                                                          NSArray *arr = @[@"Replace", @"Stop"];
                                                          [self displayPopupAlert:@"Module could not be created because it already exists. Do you want to replace it with a new one?" withButtons:arr alertTag:kCOPYALERT];
                                                      }
                                                      else if (error.code == 4) {
-                                                         // Handle Copying Error: because an item with the same name already exists.
+                                                             // Handle Copying Error: because an item with the same name already exists.
                                                          [self displayPopupAlert:@"Module could not be replaced becasue some files could not be removed." withButtons:nil alertTag:kREMOVEALERT];
                                                      }
                                                  }
                                                  else {
-                                                     // Module generated successfully
+                                                         // Module generated successfully
                                                      [self displayPopupAlert:@"Module successfully generated. Please check your project directory." withButtons:nil alertTag:kMODULESUCCESSALERT];
                                                  }
                                              }];
@@ -140,7 +140,7 @@
 }
 
 - (IBAction)createModule:(id)sender {
-    // Check if user selected Include unite tests option and did not enered test file path.
+        // Check if user selected Include unite tests option and did not enered test file path.
     if (self.includeTestsCheckBoxButton.state == 1 && [self.testsPathTextField.stringValue isEqual: @""]) {
         NSArray *arr = @[@"Ok"];
         [self displayPopupAlert:@"Test File Path cannot be empty. Please select Tests File Path." withButtons:arr alertTag:kTESTSALERT];
@@ -162,6 +162,9 @@
     NSString *capitalizedFirstName = [firstName capitalizeFirstCharacterInString:firstName];
     NSString *lastName = [currentLoggedInUser valueForKey:kABLastNameProperty];
     NSString *capitalizedLastName = [firstName capitalizeFirstCharacterInString:lastName];
+    if ( capitalizedLastName == nil &&  capitalizedFirstName == nil){
+        return   NSFullUserName();
+    }
     return [[capitalizedFirstName stringByAppendingString:@" "] stringByAppendingString:capitalizedLastName];
 }
 
@@ -175,7 +178,7 @@
 }
 
 - (NSString *)generateModuleName {
-    // Prevents spaces in the Module Name (filename)
+        // Prevents spaces in the Module Name (filename)
     return [self.moduleNameTextField.stringValue stringByReplacingOccurrencesOfString:@" " withString:@""];
 }
 
@@ -190,7 +193,7 @@
 - (NSString *)generateLanguage {
     return self.languagesPopUpButton.titleOfSelectedItem;
 }
-                       
+
 - (NSString *)generateCompanyName {
     return self.companyTextField.stringValue;
 }
@@ -227,32 +230,32 @@
 #pragma mark - VPTextFieldDelegate methods
 - (void)didBecomeFirstResponder:(NSTextField *)textField {
     
-    // Check if TextField is of kind to chose path
+        // Check if TextField is of kind to chose path
     if (textField == self.modulePathTexField || textField == self.testsPathTextField) {
         
         NSOpenPanel* openDlg = [NSOpenPanel openPanel];
         
-        // Enable the selection of files in the dialog.
+            // Enable the selection of files in the dialog.
         [openDlg setCanChooseFiles:YES];
         
-        // Enable the selection of directories in the dialog.
+            // Enable the selection of directories in the dialog.
         [openDlg setCanChooseDirectories:YES];
         
-        // Change "Open" dialog button to "Select"
+            // Change "Open" dialog button to "Select"
         [openDlg setPrompt:@"Select"];
         
-        // Display the dialog. If the OK button was pressed process the files
+            // Display the dialog. If the OK button was pressed process the files
         if ([openDlg runModal] == NSModalResponseOK ) {
             NSURL *result = openDlg.URL;
             if (result != nil) {
                 NSString *path = result.path;
                 textField.stringValue = path;
                 
-                // Check if all textfields contain stringValue or not to enable Generate button.
+                    // Check if all textfields contain stringValue or not to enable Generate button.
                 [self.generatedModuleButton setEnabled:YES];
             }
             else {
-                // User clicked on cancel
+                    // User clicked on cancel
                 return;
             }
             
